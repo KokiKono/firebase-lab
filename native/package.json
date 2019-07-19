@@ -4,12 +4,17 @@
   "private": true,
   "scripts": {
     "start": "react-native start",
+    "start_ios": "ENVFILE=.env react-native run-ios",
     "test": "jest",
     "lint": "eslint ."
   },
   "dependencies": {
+    "@react-native-firebase/app": "0.0.26",
+    "@react-native-firebase/auth": "0.0.26",
     "react": "16.8.6",
-    "react-native": "0.60.4"
+    "react-native": "0.60.4",
+    "react-native-config": "^0.11.7",
+    "react-native-google-signin": "^2.0.0"
   },
   "devDependencies": {
     "@babel/core": "^7.5.5",

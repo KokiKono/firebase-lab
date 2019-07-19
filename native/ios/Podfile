@@ -27,6 +27,11 @@ target 'firebase_lab' do
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
+  pod 'RNFBAuth', :path => '../node_modules/@react-native-firebase/auth/ios'
+
+  pod 'RNGoogleSignin', :path => '../node_modules/react-native-google-signin'
+
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
 
   target 'firebase_labTests' do
     inherit! :search_paths
@@ -36,12 +41,24 @@ target 'firebase_lab' do
   use_native_modules!
 end
 
-target 'firebase_lab-tvOS' do
-  # Pods for firebase_lab-tvOS
+post_install do |installer|
+  installer.pods_project.targets.each do |target|
+    targets_to_ignore = %w(React)
 
-  target 'firebase_lab-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
+    if targets_to_ignore.include? target.name
+      target.remove_from_project
+    end
+
+    if target.name == 'react-native-config'
+      phase = target.project.new(Xcodeproj::Project::Object::PBXShellScriptBuildPhase)
+      phase.shell_script = "cd ../../"\
+                           " && RNC_ROOT=./node_modules/react-native-config/"\
+                           " && export SYMROOT=$RNC_ROOT/ios/ReactNativeConfig"\
+                           " && export BUILD_DIR=$RNC_ROOT/ios/ReactNativeConfig"\
+                           " && ruby $RNC_ROOT/ios/ReactNativeConfig/BuildDotenvConfig.ruby"
+
+      target.build_phases << phase
+      target.build_phases.move(phase,0)
+    end
   end
-
 end
