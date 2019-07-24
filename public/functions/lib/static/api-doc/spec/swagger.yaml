@@ -1,0 +1,44 @@
+swagger: "2.0"
+info:
+  description: "firebase ラボ"
+  version: "0.1"
+  title: "firebase ラボ"
+host: "localhost"
+basePath: "/api/v1"
+tags:
+- name: "Pet"
+schemes:
+- "http"
+securityDefinitions:
+  basicAuth:
+    type: basic
+  tokenAuth:
+    type: "apiKey"
+    name: "Authorization"
+    in: "header"
+paths:
+  /pets:
+    get:
+      tags:
+        - "Pet"
+      summary: "Get Pet List"
+      security:
+        - tokenAuth: []
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: "Pet list"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Pet"
+definitions:
+  Pet:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      name:
+        type: "string"
+
