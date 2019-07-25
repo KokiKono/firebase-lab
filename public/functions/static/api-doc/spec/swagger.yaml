@@ -3,7 +3,7 @@ info:
   description: "firebase ラボ"
   version: "0.1"
   title: "firebase ラボ"
-host: "localhost"
+host: "localhost:3000"
 basePath: "/api/v1"
 tags:
 - name: "Pet"
@@ -17,6 +17,7 @@ securityDefinitions:
     name: "Authorization"
     in: "header"
 paths:
+#TODO: ページング機能
   /pets:
     get:
       tags:
