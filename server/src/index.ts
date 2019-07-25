@@ -1,7 +1,9 @@
 import * as Express from 'express';
+require('dotenv').config();
+
 import api from './api';
 
-const PORT = 3000;
+const {PORT} = process.env;
 const app = Express();
 
 app.use((req, res, next) => {
