@@ -1,17 +1,17 @@
 import * as Express from 'express';
+import api from './api';
 
+const PORT = 3000;
 const app = Express();
 
-app.get(
-    '/',
-    (req: Express.Request, res: Express.Response) => {
-        return res.send('Hello world.');
-    });
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    next();
+});
 
-app.listen(
-    3000,
-    () => {
-        console.log('Example app listening on port 3000!');
-    });
+app.use('/api', api);
 
-export default app;
+app.listen(PORT, () => {
+    console.log(`start server port ${PORT}!!`);
+});
