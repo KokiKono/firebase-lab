@@ -3,7 +3,7 @@ require('dotenv').config();
 
 import api from './api';
 
-const {PORT} = process.env;
+const {PORT, NODE_ENV} = process.env;
 const app = Express();
 
 app.use((req, res, next) => {
@@ -15,5 +15,5 @@ app.use((req, res, next) => {
 app.use('/api', api);
 
 app.listen(PORT, () => {
-    console.log(`start server port ${PORT}!!`);
+    console.log(`start server mode=${NODE_ENV}, port=${PORT}!!`);
 });
