@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { View, StyleSheet } from 'react-native';
 import {GoogleSignin, GoogleSigninButton, statusCodes, User} from 'react-native-google-signin';
-import { firebase } from '@react-native-firebase/auth';
+import auth from '@react-native-firebase/auth';
 import Config from "react-native-config";
-
+import {AuthRouter, AuthProvider, AuthContext} from './Auth';
+import UserList from './UserList';
+import DomainList from './DomainList';
 
 const {WEB_CLIENT_ID} = Config;
 
@@ -20,58 +22,33 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   }
 })
-
-class App extends React.Component<any, State> {
-  state: State = {
-    userInfo: undefined,
-    isSigninInProgress: false,
-  }
-  constructor(props: any)  {
-    super(props);
-    GoogleSignin.configure({
-      scopes: ['https://www.googleapis.com/auth/cloud-platform'],
-      webClientId: WEB_CLIENT_ID,
-    });
-
-    this._signIn = this._signIn.bind(this);
-  }
-
-  // Somewhere in your code
-  async _signIn() {
-    try {
-      await GoogleSignin.hasPlayServices();
-      const userInfo = await GoogleSignin.signIn();
-      const credential = firebase.auth.GoogleAuthProvider.credential(userInfo.idToken);
-      const result = await firebase.auth().signInWithCredential(credential);
-      console.log('firebase', result);
-      console.log('userInfo', userInfo);
-      this.setState({ userInfo, isSigninInProgress: true });
-    } catch (error) {
-      console.error('error', error);
-      if (error.code === statusCodes.SIGN_IN_CANCELLED) {
-        // user cancelled the login flow
-      } else if (error.code === statusCodes.IN_PROGRESS) {
-        // operation (f.e. sign in) is in progress already
-      } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
-        // play services not available or outdated
-      } else {
-        // some other error happened
-      }
-    }
-  };
-
-  render() {
-    return (
-      <View style={styles.container}>
-         <GoogleSigninButton
+const Login = () => {
+  const {siginIn} = useContext(AuthContext);
+  return(
+    <GoogleSigninButton
           style={{ width: 192, height: 48 }}
           size={GoogleSigninButton.Size.Wide}
           color={GoogleSigninButton.Color.Dark}
-          onPress={this._signIn}
-          disabled={this.state.isSigninInProgress} />
-      </View>
-    )
-  }
+          onPress={() => siginIn()}
+      />
+  )
 }
 
+const App = () => {
+  GoogleSignin.configure({
+    scopes: ['https://www.googleapis.com/auth/cloud-platform'],
+    webClientId: WEB_CLIENT_ID,
+  });
+  return (
+    <View style={styles.container}>
+      <AuthProvider>
+        <AuthRouter
+          renderLogin={() => <Login />}
+          renderMain={() => <DomainList />}
+          // renderMain={() => <UserList />}
+        />
+      </AuthProvider>
+    </View>
+  )
+}
 export default App;
